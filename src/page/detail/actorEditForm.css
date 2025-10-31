@@ -1,0 +1,46 @@
+.shortTextInput {
+  padding: 8px;
+}
+
+.biography {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.date {
+  padding: 8px;
+}
+
+.actorEditForm__biography__edit {
+  display: block;
+}
+
+button {
+  border: none;
+  font-size: 1vw;
+  background-color: black;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.flex {
+  display: flex;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.flex-grow-1 {
+  flex-grow: 1;
+}
+
+.margin-right-5px {
+  margin-right: 5px;
+}
+
+.margin-bottom-10px {
+  margin-bottom: 10px;
+}

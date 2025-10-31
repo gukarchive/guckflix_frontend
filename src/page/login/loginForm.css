@@ -1,0 +1,75 @@
+.loginForm {
+  margin: 40px;
+  padding: 80px;
+  background-color: #060606;
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.loginForm input {
+  width: 100%;
+  background-color: #333;
+  border: 0;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #fff;
+  font: inherit;
+  font-weight: 300;
+  line-height: 50px;
+  margin: 0 0 20px;
+  min-width: 300px;
+  padding: 0 20px;
+}
+
+.loginForm h1 {
+  letter-spacing: 0 !important;
+  margin: 0 0 10px;
+  padding: 0;
+  color: #fff;
+  font-size: 32px;
+  font-weight: 500;
+  margin-bottom: 28px;
+}
+
+.loginForm button {
+  font: inherit;
+  border: 0;
+  box-sizing: border-box;
+  color: #fff;
+  line-height: 1em;
+  background: #e50914;
+  padding: 16px;
+  width: 100%;
+  border-radius: 4px;
+  margin: 24px 0 12px;
+}
+
+.loginForm div:nth-of-type(1) button:nth-of-type(2) {
+  font: inherit;
+  border: 0;
+  box-sizing: border-box;
+  color: black;
+  line-height: 1em;
+  background: white;
+  padding: 16px;
+  width: 100%;
+  border-radius: 4px;
+  margin: 24px 0 0px;
+}
+
+.loginForm hr {
+  background: #121212;
+  height: 1px;
+  border: 0;
+}
+
+.color-red {
+  color: red;
+}
+
+.color-green {
+  color: green;
+}

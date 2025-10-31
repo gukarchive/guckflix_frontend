@@ -1,0 +1,106 @@
+.App {
+  background: black;
+  height: 100vh;
+}
+
+.catalog {
+  color: white;
+  background: black;
+  padding: 5vw;
+  padding-top: 20vh;
+}
+
+.catalog__search {
+  font-family: 'Noto Sans KR';
+  font-weight: 500;
+  font-size: 3vh;
+  margin-bottom: 5vh;
+  display: flex;
+}
+
+.catalog__videos {
+  display: grid;
+  box-sizing: border-box;
+}
+
+.catalog__videos__wrap {
+  margin-bottom: 5vh;
+}
+
+@media (max-width: 499px) {
+  .catalog__videos {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+  .catalog__videos .videoSlider__items__cards__wrap__card__img img {
+    max-width: 150px;
+  }
+}
+
+@media (min-width: 500px) {
+  .catalog__videos {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+  .catalog__videos .videoSlider__items__cards__wrap__card__img img {
+    max-width: 220px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .catalog__videos {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+  .catalog__videos .videoSlider__items__cards__wrap__card__img img {
+    max-width: 240px;
+  }
+}
+
+@media (min-width: 2560px) {
+  .catalog__videos {
+    grid-template-columns: repeat(auto-fill, minmax(256px, 1fr));
+  }
+  .catalog__videos .videoSlider__items__cards__wrap__card__img img {
+    max-width: 256px;
+  }
+}
+
+.catalog__videos .videoSlider__items__cards__wrap__card {
+  justify-self: center;
+  width: min-content;
+}
+
+.catalog__videos .videoSlider__items__cards__wrap__card__title {
+  font-size: 2vh;
+  padding: 0 0.5vw;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.catalog__videos .videoSlider__items__cards__wrap__card__img img {
+  height: auto !important;
+}
+
+.catalog input {
+  border-radius: 5px;
+  padding: 5px 10px;
+  height: 3vh;
+  width: 50vw;
+  max-width: 250px;
+}
+
+.catalog__loadMore {
+  text-align: center;
+}
+
+.catalog__loadMore__button {
+  cursor: pointer;
+  color: white;
+  background: none;
+  border: 2px solid white;
+  top: 2px;
+  height: 5vh;
+  border-radius: 8px;
+  padding: 0 1vw;
+  font-family: 'Noto Sans KR';
+  font-weight: 500;
+  opacity: 1;
+}

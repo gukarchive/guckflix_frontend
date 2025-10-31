@@ -1,0 +1,66 @@
+.videoSlider {
+  color: white;
+  padding: 5vw;
+  background-color: black;
+  box-sizing: border-box;
+}
+
+.videoSlider__items {
+  margin-bottom: 10vh;
+}
+.videoSlider__items__title {
+  font-family: 'Noto Sans KR';
+  font-weight: 500;
+  font-size: 3vh;
+  margin-bottom: 3vh;
+}
+.videoSlider__items__cards {
+  overflow: hidden;
+  background-color: #020202;
+}
+.videoSlider__items__cards__wrap {
+  display: flex;
+  /* transform: translateX(-1000px); */
+  transition: 0.5s ease;
+}
+.videoSlider__items__cards__wrap__card__title {
+  font-size: 2vh;
+  padding: 0 0.5vw;
+}
+
+.videoSlider__items__cards__wrap__card__img img {
+  border-radius: 20px;
+  height: 40vh;
+  -webkit-user-drag: none;
+}
+
+.videoSlider__items__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.videoSlider__items > div:nth-child(1) {
+  display: flex;
+  gap: 1vw;
+  justify-content: space-between;
+}
+
+.videoSlider__items button {
+  min-width: 30px;
+  min-height: 30px;
+  background: none;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-family: Noto Sans KR;
+  font-weight: 500;
+  padding: 0 1vw;
+}
+
+.videoSlider__items .material-symbols-outlined {
+  font-size: 1.5vw;
+  alignment-baseline: middle;
+  position: relative;
+}

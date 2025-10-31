@@ -1,0 +1,70 @@
+.historyCatalog__OutlineBox {
+  font-size: 0.7vw;
+  padding: 2vw;
+  border: 1px solid grey; /* 외곽선 추가 */
+  box-shadow: 1px 1px 5px rgba(25, 25, 25, 0.9);
+}
+
+.historyCatalog__OutlineBox ul {
+  list-style-type: none;
+}
+
+.historyCatalog__year:not(:last-child) {
+  margin-bottom: 2vw;
+  border-bottom: 1px solid #121212;
+}
+
+.historyCatalog__title {
+  font-size: 0.9vw;
+  margin-bottom: 1vw;
+}
+
+.historyCatalog__casting {
+  padding-left: 1vw;
+  font-size: 0.8vw;
+  color: grey;
+}
+
+.red-text {
+  color: red;
+}
+
+.autoComplete {
+  z-index: 1;
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  font-weight: 300;
+}
+
+.autoComplete__item__focus {
+  color: black;
+  background-color: white;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.autoComplete__item {
+  color: white;
+  background-color: #242424;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.search {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px;
+  position: relative;
+  font-size: 0.8vw;
+  font-weight: 300;
+}
+
+.relative {
+  position: relative;
+}
+
+.margin-bottom-10px {
+  margin-bottom: 10px;
+}

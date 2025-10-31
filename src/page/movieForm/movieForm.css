@@ -1,0 +1,68 @@
+.movieForm__wrapper {
+  background-color: black;
+  font-weight: 100;
+  display: grid;
+  padding: 20vh 18vw 2vh;
+  grid-template-columns: 0.3fr 1fr;
+  color: white;
+}
+
+.width-100percent {
+  width: 100%;
+}
+
+.box-sizing-border-box {
+  box-sizing: border-box;
+}
+
+.right {
+  margin: 0 1.5vw;
+  justify-content: space-between;
+}
+
+.left img {
+  border-radius: 7px;
+  height: auto;
+  max-width: 100%;
+  min-width: 200px;
+}
+
+button {
+  border: none;
+  font-size: 1vw;
+  background-color: black;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.overview {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  min-height: 200px;
+}
+
+textarea {
+  width: 100%;
+}
+
+.display-inline-block {
+  display: inline-block;
+}
+
+.margin-10 {
+  margin: 10px;
+}
+
+.background-color-black {
+  background-color: black;
+}
+
+.padding-bottom-3vh {
+  padding-bottom: 3vh;
+}
+
+.color-red {
+  color: red
+}

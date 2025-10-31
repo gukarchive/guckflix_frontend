@@ -1,0 +1,13 @@
+.footer {
+  background-color: #060606;
+  color: white;
+  text-align: end;
+
+  border: none;
+}
+
+.footer__loginBtn {
+  height: 2vw;
+  border: none;
+  background-color: #060606;
+}
