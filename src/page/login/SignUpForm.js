@@ -155,7 +155,7 @@ const SignUpForm = () => {
   const navigate = useNavigate();
 
   const formHandle = async () => {
-    if (usernameProps.status !== STATUS.AVALIABLE) {
+    if (usernameProps.status !== STATUS.SUCCESS) {
       alert('이름을 다시 입력하세요.');
       return;
     }
