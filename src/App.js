@@ -18,6 +18,11 @@ import MovieupdateForm from './page/movieForm/movieupdateForm.js';
 import PublicRoute from './PublicRoute.js';
 import AdminOverview from './page/admin/AdminOverview.js';
 import AdminMovies from './page/admin/AdminMovies.js';
+import AuthCallback from './page/login/AuthCallback.js';
+import PrivateRoute from './PrivateRoute.js';
+import MembersMyPage from './page/members/MembersMyPage.js';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const store = createStore(loginReducer);
@@ -48,10 +53,18 @@ function App() {
             path="/signUpForm"
             element={<PublicRoute element={<SignUpForm />} />}
           />
+          <Route
+            path="/members/mypage"
+            element={<PrivateRoute element={<MembersMyPage />} />}
+          />
           {/* <Route
             path="/admin"
             element={<AdminRoute element={<AdminOverview />} />}
           /> */}
+          <Route
+            path="/auth/callback"
+            element={<PublicRoute element={<AuthCallback />} />}
+          />
           <Route
             path="/admin/movies"
             element={<AdminRoute element={<AdminMovies />} />}
@@ -70,6 +83,7 @@ function App() {
           />
         </Routes>
         <Footer />
+        <ToastContainer position="top-center" autoClose={2500} />
       </Provider>
     </div>
   );

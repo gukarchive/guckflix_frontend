@@ -49,13 +49,7 @@ const LoginForm = () => {
     const data = await response.json();
 
     if (data.status_code === 200) {
-      dispatch({ type: LOGIN_ACTION_TYPE.SET_ID, payload: data.id });
-      dispatch({ type: LOGIN_ACTION_TYPE.SET_LOGIN, payload: true });
-      dispatch({
-        type: LOGIN_ACTION_TYPE.SET_ROLE,
-        payload: data.role,
-      });
-      navigate('/');
+      navigate('/auth/callback');
     }
     if (data.status_code === 400) {
       dispatch({ type: LOGIN_ACTION_TYPE.SET_ID, payload: null });
@@ -63,11 +57,8 @@ const LoginForm = () => {
     }
   };
 
-  const location = useLocation(); // useLocation 훅으로 현재 위치 정보 가져오기
-  const redirectPath = location.state?.from || '/'; // state가 없으면 기본값으로 '/' 사용
-
   const handleLogin = () => {
-    window.location.href = `${apiConfig.baseUrl}/oauth2/authorization/google?state=${redirectPath}`;
+    window.location.href = `${apiConfig.baseUrl}/oauth2/authorization/google`;
   };
 
 

@@ -1,21 +1,32 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Loading from './component/loading/Loading';
+import Header from './component/header/Header';
 
 const PrivateRoute = ({ element }) => {
   const login = useSelector((state) => state.login);
+  const location = useLocation();
 
-  // 주소 창 타고 들어올 경우 로그인 처리 결과가 로드될 때까지 로딩 스피너
   if (login === null) {
     return <Loading />;
   }
 
-  return login ? (
-    element
-  ) : (
-    <Navigate to="/loginForm" {...alert(`로그인이 필요한 서비스입니다`)} />
-  );
+  if (login) {
+    return (
+      <>
+        <Header />
+        {element}
+      </>
+    );
+  }
+
+  const requestedApi = location.pathname;
+  localStorage.setItem('requestedApi', requestedApi);
+  toast.warning('로그인이 필요합니다.', { toastId: 'login-required' });
+
+  return <Navigate to="/loginForm" replace />;
 };
 
 export default PrivateRoute;

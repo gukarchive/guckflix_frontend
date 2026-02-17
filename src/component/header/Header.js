@@ -101,6 +101,13 @@ const Header = () => {
             </li>
           );
         })}
+        {login ? (
+          <li className="header__itmes__li">
+            <Link to={'/members/mypage'}>My</Link>
+          </li>
+        ) : (
+          <></>
+        )}
         <li className="header__itmes__li">
           {!login ? (
             <Link to={'/loginForm'}>{'Login'}</Link>

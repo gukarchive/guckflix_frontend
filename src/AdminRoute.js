@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Loading from './component/loading/Loading';
 import AdminTemplate from './component/admin/AdminTemplate.js';
 
@@ -9,23 +10,24 @@ const AdminRoute = ({ element }) => {
   const role = useSelector((state) => state.role);
   const location = useLocation();
 
-  // 주소 창 타고 들어올 경우 로그인 처리 결과가 로드될 때까지 로딩 스피너
   if (login === null) {
     return <Loading />;
   }
 
-  // 관리자인 경우
-  if(login && role == 'ADMIN'){
-    return <AdminTemplate element={element} />
+  if (login && role === 'ADMIN') {
+    return <AdminTemplate element={element} />;
   }
-  
-  // 로그인이 필요한 경우 현재 요청한 위치 저장
-  
+
+  if (login && role === 'USER') {
+    toast.warning('관리자 권한이 필요합니다.', { toastId: 'admin-required' });
+    return <Navigate to="/" replace />;
+  }
+
   const requestedPath = location.pathname;
-  return <Navigate to="/loginForm"
-  state={{ from: requestedPath }}
-  replace
-  {...alert(`관리자 권한이 필요한 서비스입니다`)} />
+  localStorage.setItem('requestedApi', requestedPath);
+  toast.warning('관리자 로그인이 필요합니다.', { toastId: 'admin-login-required' });
+
+  return <Navigate to="/loginForm" replace />;
 };
 
 export default AdminRoute;
