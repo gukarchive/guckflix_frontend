@@ -16,8 +16,8 @@ import MovieForm from './page/movieForm/MovieForm';
 import SignUpForm from './page/login/SignUpForm.js';
 import MovieupdateForm from './page/movieForm/movieupdateForm.js';
 import PublicRoute from './PublicRoute.js';
-import AdminOverview from './page/admin/AdminOverview.js';
 import AdminMovies from './page/admin/AdminMovies.js';
+import AdminAiEmbed from './page/admin/AdminAiEmbed.js';
 import AuthCallback from './page/login/AuthCallback.js';
 import PrivateRoute from './PrivateRoute.js';
 import MembersMyPage from './page/members/MembersMyPage.js';
@@ -68,6 +68,10 @@ function App() {
           <Route
             path="/admin/movies"
             element={<AdminRoute element={<AdminMovies />} />}
+          />
+          <Route
+            path="/admin/ai/embed"
+            element={<AdminRoute element={<AdminAiEmbed />} />}
           />
           <Route
             path="/actors/:id/edit"

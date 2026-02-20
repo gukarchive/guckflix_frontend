@@ -1,6 +1,7 @@
 import React from 'react';
 import HeroSlide from '../component/heroSlide/HeroSlide.jsx';
 import VideoSlider from '../component/videoSlider/VideoSlider.js';
+import FloatingChatbot from '../component/chatbot/FloatingChatbot.js';
 import {
   category,
   sortingType,
@@ -35,6 +36,7 @@ const Home = () => {
     <div>
       <HeroSlide />
       <VideoSlider showList={showList} action={action} buttonNeed={true} />
+      <FloatingChatbot />
     </div>
   );
 };

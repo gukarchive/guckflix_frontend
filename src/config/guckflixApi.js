@@ -115,6 +115,10 @@ const guckflixApi = {
   postMemos: (params) => {
     const url = '/admin/memos';
     return axiosJson.post(url, params)
+  },
+  postAiChat: (params) => {
+    const url = '/ai/chat';
+    return axiosJson.post(url, params, { withCredentials: true });
   }
 };
 
