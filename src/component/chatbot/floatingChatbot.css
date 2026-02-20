@@ -153,6 +153,18 @@
   color: #f1f1f1;
 }
 
+.chatbot-movie-link {
+  color: #ffd3d3;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 211, 211, 0.7);
+  text-underline-offset: 2px;
+}
+
+.chatbot-movie-link:hover {
+  color: #ffffff;
+}
+
 .chatbot-message.user {
   align-self: flex-end;
   background: rgba(255, 255, 255, 0.14);

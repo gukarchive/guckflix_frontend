@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import guckflixApi from '../../config/guckflixApi';
 import './floatingChatbot.css';
 
+const MOVIE_LINE_PATTERN = /^\s*-\s*\[([^\]]+)\]\s*([^:\n]+)(?::\s*(.*))?\s*$/;
+
 const FloatingChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -10,11 +12,46 @@ const FloatingChatbot = () => {
     {
       role: 'bot',
       text:
-        '안녕하세요. 저는 영화 추천 챗봇입니다.\n' +
-        '예: "라라랜드 같은 뮤지컬 영화 5개 추천해줘"\n' +
-        '영화 추천 이외의 주제는 제공해드릴 수 없습니다.',
+        '안녕하세요. 영화 추천 챗봇입니다.\n' +
+        '예: "인셉션 같은 액션 영화 5개 추천해줘"\n' +
+        '영화 추천 외 주제는 제공드리기 어렵습니다.',
     },
   ]);
+
+  const renderBotText = (text, messageIndex) => {
+    const source = typeof text === 'string' ? text : String(text || '');
+    const lines = source.split('\n');
+
+    return lines.map((line, lineIndex) => {
+      const match = line.match(MOVIE_LINE_PATTERN);
+      const key = `m-${messageIndex}-${lineIndex}`;
+
+      if (!match) {
+        return (
+          <React.Fragment key={key}>
+            {line}
+            {lineIndex < lines.length - 1 ? <br /> : null}
+          </React.Fragment>
+        );
+      }
+
+      const movieId = match[1].trim();
+      const title = match[2].trim();
+      const description = (match[3] || '').trim();
+      const movieHref = `/movies/${encodeURIComponent(movieId)}`;
+
+      return (
+        <React.Fragment key={key}>
+          -{' '}
+          <a className="chatbot-movie-link" href={movieHref}>
+            {title}
+          </a>
+          {description ? `: ${description}` : ''}
+          {lineIndex < lines.length - 1 ? <br /> : null}
+        </React.Fragment>
+      );
+    });
+  };
 
   const sendMessage = async () => {
     const text = inputValue.trim();
@@ -63,7 +100,7 @@ const FloatingChatbot = () => {
         <div className="chatbot-panel-body">
           {messages.map((message, index) => (
             <div key={`${message.role}-${index}`} className={`chatbot-message ${message.role}`}>
-              {message.text}
+              {message.role === 'bot' ? renderBotText(message.text, index) : message.text}
             </div>
           ))}
           {isLoading ? <div className="chatbot-message bot">응답 생성 중...</div> : null}
