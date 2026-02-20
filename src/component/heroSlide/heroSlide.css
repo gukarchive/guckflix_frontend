@@ -33,7 +33,7 @@
 .heroSlide__items__content__info__title {
   font-family: 'Noto Sans KR';
   font-weight: 700;
-  font-size: 4vw;
+  font-size: clamp(30px, 4vw, 72px);
   color: white;
   line-height: 1;
   margin-bottom: 3rem;
@@ -49,7 +49,7 @@
   margin-bottom: 3rem;
   font-family: 'Noto Sans KR';
   font-weight: 400;
-  font-size: 1vw;
+  font-size: clamp(13px, 1.1vw, 18px);
   color: white;
   text-indent: 0.5vw;
   -webkit-touch-callout: none;
@@ -82,11 +82,11 @@
   display: flex;
   gap: 0.5vw;
   align-items: center;
-  height: 8vh;
+  height: clamp(42px, 8vh, 64px);
   border-radius: 8px;
   padding: 0 1vw;
   font-family: 'Noto Sans KR';
-  font-size: 1vw;
+  font-size: clamp(13px, 1vw, 16px);
   font-weight: 500;
   cursor: grab;
   opacity: 1;
@@ -109,5 +109,34 @@
 }
 
 .material-symbols-outlined {
-  font-size: 2.5vw;
+  font-size: clamp(18px, 2vw, 34px);
+}
+
+@media (max-width: 768px) {
+  .heroSlide__items__content {
+    grid-template-columns: 1fr;
+    padding: 50px 18px 28px;
+  }
+
+  .heroSlide__items__content__info__overview {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+  }
+
+  .heroSlide__items__content__w500img {
+    display: none;
+  }
+
+  .heroSlide__items__content__info__buttonDiv {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .heroSlide__items__content__info__buttonDiv__button {
+    justify-content: center;
+    padding: 0 8px;
+  }
 }

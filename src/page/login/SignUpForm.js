@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import guckflixApi from '../../config/guckflixApi';
+import { toast } from 'react-toastify';
 import './loginForm.css';
 
 const STATUS = {
@@ -156,39 +157,39 @@ const SignUpForm = () => {
 
   const formHandle = async () => {
     if (usernameProps.status !== STATUS.SUCCESS) {
-      alert('이름을 다시 입력하세요.');
+      toast.warning('이름을 다시 입력하세요.');
       return;
     }
     if (passwordProps.status !== STATUS.SUCCESS) {
-      alert('패스워드를 다시 입력하세요.');
+      toast.warning('패스워드를 다시 입력하세요.');
       return;
     }
     if (emailProps.status !== STATUS.SUCCESS) {
-      alert('이메일을 다시 입력하세요.');
+      toast.warning('이메일을 다시 입력하세요.');
       return;
     }
 
     const response = await guckflixApi.postSignUp(form);
 
     if (response.status === 200) {
-      alert('정상적으로 가입되었습니다. 다시 로그인해주세요.');
+      toast.success('정상적으로 가입되었습니다. 다시 로그인해주세요.');
       navigate('/loginForm');
     }
     if (response.status === 400) {
-      alert('잘못된 요청입니다.');
+      toast.error('잘못된 요청입니다.');
     }
     if (response.status === 405) {
-      alert(
+      toast.error(
         '이미 가입된 사용자 입니다. 로그인하거나 다른 아이디로 가입하세요.',
       );
     }
     if (response.status === 500) {
-      alert('서버에 오류가 있습니다. 다시 시도하거나 고객센터에 문의하세요.');
+      toast.error('서버에 오류가 있습니다. 다시 시도하거나 고객센터에 문의하세요.');
     }
   };
 
   return (
-    <div className="loginForm">
+    <div className="loginForm loginForm--signup">
       <h1>회원가입</h1>
       <form
         onKeyDown={(e) => {
@@ -230,31 +231,33 @@ const SignUpForm = () => {
         </div>
       </form>
 
-      <div>
-        <button onClick={formHandle}>가입</button>
-        <hr></hr>
+      <div className="loginForm__actions loginForm__actions--single">
+        <button className="loginForm__btn loginForm__btn--light" onClick={formHandle}>
+          회원가입
+        </button>
+        <button className="loginForm__btn" onClick={() => navigate('/loginForm')}>
+          로그인으로 돌아가기
+        </button>
       </div>
     </div>
   );
 };
 
 const HandlerComponent = ({ handleProps }) => {
-  const successStyle = {
-    color: 'green',
-  };
-
-  const failStyle = {
-    color: 'red',
-  };
-
   if (handleProps.status === STATUS.ADVICE)
-    return <div>{handleProps.message}</div>;
+    return <div className="signupStatusText">{handleProps.message}</div>;
 
   if (handleProps.status === STATUS.SUCCESS)
-    return <div style={successStyle}>{handleProps.message}</div>;
+    return (
+      <div className="signupStatusText signupStatusText--success">
+        {handleProps.message}
+      </div>
+    );
 
   if (handleProps.status === STATUS.FAIL)
-    return <div style={failStyle}>{handleProps.message}</div>;
+    return (
+      <div className="signupStatusText signupStatusText--fail">{handleProps.message}</div>
+    );
 };
 
 export default SignUpForm;

@@ -8,7 +8,7 @@
   background-size: cover;
   background-position: center;
   padding: 0px 10vw;
-  padding-top: 20vh;
+  padding-top: clamp(110px, 20vh, 220px);
   font-family: 'Noto Sans KR';
   justify-content: center;
   overflow: hidden;
@@ -18,7 +18,7 @@
 }
 
 .detail__tops__title {
-  font-size: 4vw;
+  font-size: clamp(30px, 4vw, 72px);
   font-weight: 700;
   line-height: 1;
 }
@@ -32,7 +32,7 @@
 
 .detail__tops__sub__runtime,
 .detail__tops__sub__relDate {
-  font-size: 1.2vw;
+  font-size: clamp(13px, 1.2vw, 20px);
   font-weight: 100;
 }
 
@@ -43,23 +43,22 @@
 
 .detail__tops__sub__genre__item {
   font-weight: 300;
-  font-size: 0.8vw;
+  font-size: clamp(11px, 0.8vw, 14px);
   border: 2px solid grey;
   border-radius: 25px;
   padding: 2px 5px;
 }
 
 .detail__tops__tagline {
-  font-size: 3vh;
+  font-size: clamp(16px, 2.4vh, 28px);
   font-weight: 100;
   font-style: oblique;
 }
 
 .detail__tops__posterSection {
-  gap: 0.5vw;
+  gap: clamp(8px, 0.8vw, 14px);
   display: flex;
   box-sizing: border-box;
-  /* height: 70vh; */
   width: 100%;
   border: 3px solid black;
   background: black;
@@ -67,12 +66,15 @@
 .detail__tops__posterSection img {
   min-width: 50px;
   max-width: 30%;
+  object-fit: cover;
 }
 
 .detail__tops__posterSection iframe {
   flex: 2;
   box-sizing: border-box;
   max-width: 70%;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   border: none;
 }
 
@@ -85,7 +87,7 @@
 
 .detail__bottoms__overview__title {
   font-weight: 500;
-  font-size: 3vh;
+  font-size: clamp(22px, 3vh, 34px);
   margin-bottom: 5vh;
 }
 
@@ -93,5 +95,50 @@
   text-indent: 1vw;
   padding: 1vw;
   font-weight: 300;
-  font-size: 1.2vw;
+  font-size: clamp(14px, 1.2vw, 20px);
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .detail__tops {
+    padding: 92px 14px 18px;
+    gap: 16px;
+  }
+
+  .detail__tops__title {
+    line-height: 1.1;
+  }
+
+  .detail__tops__sub {
+    gap: 6px;
+  }
+
+  .detail__tops__posterSection {
+    flex-direction: column;
+    border-width: 2px;
+  }
+
+  .detail__tops__posterSection img {
+    max-width: 46%;
+    width: 46%;
+    align-self: center;
+  }
+
+  .detail__tops__posterSection iframe {
+    max-width: 100%;
+    min-height: 210px;
+  }
+
+  .detail__bottoms__overview {
+    padding: 20px 14px;
+  }
+
+  .detail__bottoms__overview__title {
+    margin-bottom: 14px;
+  }
+
+  .detail__bottoms__overview__text {
+    text-indent: 0;
+    padding: 0;
+  }
 }

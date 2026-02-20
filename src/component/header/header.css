@@ -1,11 +1,39 @@
+.header {
+  z-index: 100;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 0.5fr 2fr;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  opacity: 1;
+  height: 100px;
+  transition: background-color 0.25s ease, height 0.25s ease, opacity 0.25s ease,
+    transform 0.25s ease, box-shadow 0.25s ease;
+  background: transparent;
+}
+
+.header--shrink {
+  background-color: rgba(0, 0, 0, 0.9);
+  height: 56px;
+  opacity: 0.92;
+}
+
 .header__logo {
   text-align-last: center;
   height: 38px;
   cursor: pointer;
   padding-left: 5vw;
 }
+
 .header__logo__img {
   height: inherit;
+}
+
+.header__mobile-toggle {
+  display: none;
 }
 
 .header__items {
@@ -64,4 +92,94 @@
   background: none;
   border: none;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .header {
+    display: flex;
+    justify-content: space-between;
+    grid-template-columns: none;
+    height: 70px;
+    padding: 0 14px;
+  }
+
+  .header__logo {
+    padding-left: 0;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    height: 44px;
+  }
+
+  .header__logo__img {
+    height: 30px;
+    display: block;
+  }
+
+  .header__items {
+    gap: 16px;
+    padding-right: 0;
+  }
+
+  .header__itmes__li a,
+  .header__itmes__li button {
+    font-size: 15px;
+  }
+
+  .header--mobile-collapsed {
+    left: 0;
+    right: auto;
+    top: 0;
+    width: 100vw;
+    height: 70px;
+    border-radius: 0;
+    background: rgba(0, 0, 0, 0.92);
+    box-shadow: none;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    opacity: 1;
+  }
+
+  .header__mobile-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .header__items {
+    display: none;
+  }
+
+  .header__items.is-open,
+  .header__items--mobile.is-open {
+    position: absolute;
+    top: 66px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 150px;
+    margin: 0;
+    padding: 12px;
+    border-radius: 4px;
+    background: rgba(12, 12, 12, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.44);
+  }
+
+  .header__items.is-open .header__itmes__li a,
+  .header__items.is-open .header__itmes__li button,
+  .header__items--mobile.is-open .header__itmes__li a,
+  .header__items--mobile.is-open .header__itmes__li button {
+    border-radius: 3px;
+  }
 }

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import './loginForm.css';
 import { useDispatch } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { LOGIN_ACTION_TYPE } from '../../store.js';
 import apiConfig from '../../config/apiConfig';
+import { toast } from 'react-toastify';
 
 const LoginForm = () => {
   const [id, setId] = useState('');
@@ -17,43 +18,32 @@ const LoginForm = () => {
   };
 
   const navigate = useNavigate();
-
-  // const basicSignUp = () => {
-  //   fetch('http://localhost:8081/members', {
-  //     headers: {
-  //       'Content-Type': 'application/x-www-form-urlencoded',
-  //     },
-  //     method: 'POST',
-  //     mode: 'cors', // CORS 요청 모드
-  //     credentials: 'include', // 자격 증명 포함
-  //     body: Object.entries()
-  //       .map((e) => e.join('='))
-  //       .join('&'),
-  //   })
-  //     .then((data) => data.json())
-  //     .then((json) => console.log(json));
-  // };
-
   const dispatch = useDispatch();
 
   const basicLogin = async () => {
-    const response = await fetch(`${apiConfig.baseUrl}/members/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      credentials: 'include',
-      body: 'username=' + id + '&password=' + password,
-    });
+    try {
+      const response = await fetch(`${apiConfig.baseUrl}/members/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        credentials: 'include',
+        body: 'username=' + id + '&password=' + password,
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.status_code === 200) {
-      navigate('/auth/callback');
-    }
-    if (data.status_code === 400) {
-      dispatch({ type: LOGIN_ACTION_TYPE.SET_ID, payload: null });
-      dispatch({ type: LOGIN_ACTION_TYPE.SET_LOGIN, payload: false });
+      if (data.status_code === 200) {
+        navigate('/auth/callback');
+      }
+
+      if (data.status_code === 400) {
+        dispatch({ type: LOGIN_ACTION_TYPE.SET_ID, payload: null });
+        dispatch({ type: LOGIN_ACTION_TYPE.SET_LOGIN, payload: false });
+        toast.error('아이디 또는 비밀번호를 확인해 주세요.');
+      }
+    } catch (error) {
+      toast.error('로그인 요청 중 오류가 발생했습니다.');
     }
   };
 
@@ -61,9 +51,8 @@ const LoginForm = () => {
     window.location.href = `${apiConfig.baseUrl}/oauth2/authorization/google`;
   };
 
-
   return (
-    <div className="loginForm">
+    <div className="loginForm loginForm--signin">
       <h1>로그인</h1>
       <form
         onSubmit={submitHandler}
@@ -86,15 +75,24 @@ const LoginForm = () => {
             value={password}
             onChange={handlePasswordChange}
             id="password"
-            placeholder="패스워드"
+            placeholder="비밀번호"
           />
         </div>
       </form>
-      <div>
-        <button onClick={basicLogin}>로그인</button>
-        <button onClick={() => navigate('/signUpForm')}>회원가입으로</button>
-        <hr></hr>
-        <button onClick={handleLogin}>구글로 연결</button>
+
+      <div className="loginForm__actions">
+        <button className="loginForm__btn" onClick={basicLogin}>
+          로그인
+        </button>
+        <button
+          className="loginForm__btn loginForm__btn--light"
+          onClick={() => navigate('/signUpForm')}
+        >
+          회원가입
+        </button>
+        <button className="loginForm__btn loginForm__btn--google" onClick={handleLogin}>
+          구글로 연결
+        </button>
       </div>
     </div>
   );
