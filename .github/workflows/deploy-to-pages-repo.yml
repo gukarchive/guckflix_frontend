@@ -41,6 +41,8 @@ jobs:
 
       # package.json의 winBuild 실행
       - name: Build app
+        env:
+          CI: "false"
         run: npm run winBuild
 
       # 빌드 결과(build 폴더)를 B 리포로 푸시
