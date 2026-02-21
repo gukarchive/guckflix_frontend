@@ -1,0 +1,59 @@
+name: Deploy Build To Pages Repo
+
+on:
+  # A 리포의 master 브랜치에 push 될 때마다 자동 실행
+  push:
+    branches:
+      - master
+  # GitHub Actions 화면에서 수동 실행도 가능하게 함
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    # winBuild 스크립트가 Windows CMD 문법(set "...")을 쓰므로 Windows 러너 사용
+    runs-on: windows-latest
+    steps:
+      # 현재 A 리포 코드를 러너로 가져옴
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+
+      # Node.js 설치 + npm 캐시 사용(설치 속도 개선)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # lock 파일(package-lock.json) 기준으로 의존성 설치
+      - name: Install dependencies
+        run: npm ci
+
+      # GitHub Secret(ENV_PRODUCTION)에 저장한 멀티라인 내용을 .env.production 파일로 복원
+      - name: Create .env.production from secret
+        env:
+          ENV_PRODUCTION_CONTENT: ${{ secrets.ENV_PRODUCTION }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:ENV_PRODUCTION_CONTENT)) {
+            throw "Missing secret: ENV_PRODUCTION"
+          }
+          $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+          [System.IO.File]::WriteAllText("$pwd/.env.production", $env:ENV_PRODUCTION_CONTENT, $utf8NoBom)
+
+      # package.json의 winBuild 실행
+      - name: Build app
+        run: npm run winBuild
+
+      # 빌드 결과(build 폴더)를 B 리포로 푸시
+      # clean: true 이므로 B 리포 대상 브랜치 내용은 build 결과 기준으로 정리됨
+      - name: Deploy to pages repository
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          # B 리포에 push 가능한 PAT
+          token: ${{ secrets.DEPLOY_TARGET_REPO_TOKEN }}
+          # owner/repo 형식 (예: myname/my-pages-repo)
+          repository-name: ${{ vars.DEPLOY_TARGET_REPO }}
+          # 배포 대상 브랜치 (미설정 시 master)
+          branch: ${{ vars.DEPLOY_TARGET_BRANCH || 'master' }}
+          # B 리포에 업로드할 소스 폴더
+          folder: build
+          clean: true
