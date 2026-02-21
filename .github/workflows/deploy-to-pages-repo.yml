@@ -10,8 +10,8 @@ on:
 
 jobs:
   deploy:
-    # winBuild 스크립트가 Windows CMD 문법(set "...")을 쓰므로 Windows 러너 사용
-    runs-on: windows-latest
+    # JamesIves 액션은 rsync를 사용하므로 Ubuntu 러너 사용
+    runs-on: ubuntu-latest
     steps:
       # 현재 A 리포 코드를 러너로 가져옴
       - name: Checkout source repository
@@ -33,17 +33,18 @@ jobs:
         env:
           ENV_PRODUCTION_CONTENT: ${{ secrets.ENV_PRODUCTION }}
         run: |
-          if ([string]::IsNullOrWhiteSpace($env:ENV_PRODUCTION_CONTENT)) {
-            throw "Missing secret: ENV_PRODUCTION"
-          }
-          $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
-          [System.IO.File]::WriteAllText("$pwd/.env.production", $env:ENV_PRODUCTION_CONTENT, $utf8NoBom)
+          if [ -z "$ENV_PRODUCTION_CONTENT" ]; then
+            echo "Missing secret: ENV_PRODUCTION"
+            exit 1
+          fi
+          printf "%s" "$ENV_PRODUCTION_CONTENT" > .env.production
 
-      # package.json의 winBuild 실행
+      # package.json의 build 실행
       - name: Build app
         env:
           CI: "false"
-        run: npm run winBuild
+          GENERATE_SOURCEMAP: "false"
+        run: npm run build
 
       # 빌드 결과(build 폴더)를 B 리포로 푸시
       # clean: true 이므로 B 리포 대상 브랜치 내용은 build 결과 기준으로 정리됨
