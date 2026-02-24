@@ -8,6 +8,7 @@
   display: grid;
   padding: 20vh 18vw 0;
   grid-template-columns: 0.3fr 1fr;
+  gap: 2rem;
 }
 
 .actorDetail__right__side {
@@ -91,10 +92,136 @@
   font-size: 1vw;
 }
 
+.actorDetail__credits .historyCatalog__OutlineBox {
+  font-size: clamp(0.95rem, 1.05vw, 1.1rem);
+}
+
+.actorDetail__credits .historyCatalog__title {
+  font-size: clamp(1rem, 1.15vw, 1.2rem);
+}
+
+.actorDetail__credits .historyCatalog__casting {
+  font-size: clamp(0.9rem, 1vw, 1.05rem);
+}
+
+.actorDetail__credits--collapsed .historyCatalog__year:nth-child(n + 6) {
+  display: none;
+}
+
+.actorDetail__credits--collapsed .historyCatalog__year:nth-child(5) {
+  position: relative;
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 1.2rem;
+}
+
+.actorDetail__credits--collapsed .historyCatalog__year:nth-child(5)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.38);
+  z-index: 1;
+}
+
+.actorDetail__credits--collapsed .historyCatalog__year:nth-child(5)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4.8rem;
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.78) 70%,
+    black 100%
+  );
+}
+
 .text-align-center {
   text-align: center;
 }
 
 .padding-3vh-updown {
   padding: 3vh 0 3vh 0;
+}
+
+@media (max-width: 1024px) {
+  .actorDetail__wrapper {
+    padding: 12vh 8vw 0;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .actorDetail__left__side {
+    max-width: 420px;
+  }
+
+  .actorDetail__title {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+
+  .actorDetail__biography,
+  .actorDetail__biography__showup {
+    margin-top: 0.75rem;
+    text-indent: 0;
+    font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+    line-height: 1.65;
+    max-height: 13rem;
+  }
+
+  .actorDetail__biography::after {
+    height: 2.2rem;
+    background: linear-gradient(to bottom, transparent, black);
+  }
+
+  .actorDetail__showingBtn {
+    font-size: 0.95rem;
+  }
+
+  .actorDetail__credits .videoSlider__items__cards__wrap__card__title {
+    font-size: 0.95rem;
+  }
+
+  .actorDetail__credits .historyCatalog__OutlineBox {
+    font-size: 1rem;
+  }
+
+  .actorDetail__credits .historyCatalog__title {
+    font-size: 1.05rem;
+  }
+
+  .actorDetail__credits .historyCatalog__casting {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .actorDetail__wrapper {
+    padding: 10vh 5vw 0;
+    gap: 1rem;
+  }
+
+  .actorDetail__left__side {
+    max-width: 100%;
+  }
+
+  .actorDetail__left__side img {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .actorDetail__title {
+    font-size: 1.6rem;
+  }
+
+  .actorDetail__biography,
+  .actorDetail__biography__showup {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-height: 12rem;
+  }
 }

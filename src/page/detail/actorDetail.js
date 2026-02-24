@@ -18,6 +18,7 @@ const ActorDetail = () => {
   const [age, setAge] = useState(0);
   const biographyRef = useRef(null);
   const [isOverflow, setIsOverflow] = useState(false);
+  const [isCreditsExpanded, setIsCreditsExpanded] = useState(false);
 
   const navigate = useNavigate();
 
@@ -86,20 +87,33 @@ const ActorDetail = () => {
   useEffect(() => {
     setAge(calcAge(detail.birth_day, detail.death_day));
     setImage(apiConfig.profileImage(detail.profile_path));
-    checkIsOverflowed();
+    checkIsOverflowed(biographyRef, setIsOverflow);
   }, [detail]);
 
-  const checkIsOverflowed = () => {
-    const divElement = biographyRef.current;
+  useEffect(() => {
+    setIsCreditsExpanded(false);
+  }, [catalogItems]);
+
+  const checkIsOverflowed = (ref, setter) => {
+    const divElement = ref.current;
+    if (!divElement) return;
+
     const actualHeight = divElement.scrollHeight; // div 요소 내부의 실제 크기
     const showingHeight = divElement.offsetHeight; // div의 표시 크기
 
-    if (actualHeight > showingHeight) setIsOverflow(true);
+    setter(actualHeight > showingHeight);
   };
 
   const showMoreBiography = () => {
     setIsOverflow(false);
   };
+
+  const showMoreCredits = () => {
+    setIsCreditsExpanded(true);
+  };
+
+  const creditYears = Object.keys(catalogItems);
+  const shouldCollapseCredits = creditYears.length > 5;
 
   return (
     <div className="detail">
@@ -147,9 +161,26 @@ const ActorDetail = () => {
           ) : (
             <></>
           )}
-          <div className="actorDetail__credits">
+          <div
+            className={
+              shouldCollapseCredits && !isCreditsExpanded
+                ? 'actorDetail__credits actorDetail__credits--collapsed'
+                : 'actorDetail__credits'
+            }
+          >
             <h2>크레딧</h2>
             <HistoryCatalog catalogItems={catalogItems} />
+            {shouldCollapseCredits && !isCreditsExpanded ? (
+              <div className="actorDetail__showingBtnDiv">
+                <HoverbleClickableBtn
+                  btnName={'더 보기'}
+                  className={'actorDetail__showingBtn'}
+                  func={showMoreCredits}
+                />
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </div>
