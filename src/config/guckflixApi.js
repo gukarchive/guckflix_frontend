@@ -84,6 +84,10 @@ const guckflixApi = {
     const url = '/movies/' + id;
     return axiosMultipart.patch(url, params, { withCredentials: true });
   },
+  deleteMovie: (movieId) => {
+    const url = '/movies/' + movieId;
+    return axiosJson.delete(url, { withCredentials: true });
+  },
   patchActorPhoto: (id, params) => {
     const url = '/actors/' + id + '/photo';
     return axiosJson.patch(url, params, {

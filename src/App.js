@@ -57,10 +57,6 @@ function App() {
             path="/members/mypage"
             element={<PrivateRoute element={<MembersMyPage />} />}
           />
-          {/* <Route
-            path="/admin"
-            element={<AdminRoute element={<AdminOverview />} />}
-          /> */}
           <Route
             path="/auth/callback"
             element={<PublicRoute element={<AuthCallback />} />}

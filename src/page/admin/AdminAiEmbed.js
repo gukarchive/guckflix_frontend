@@ -108,7 +108,6 @@ const AdminAiEmbed = () => {
     <div className="admin-ai-embed-page">
       <div className="admin-ai-embed-overlay" />
       <section className="admin-ai-embed-panel">
-        <p className="admin-ai-embed-eyebrow">ADMIN CONSOLE</p>
         <h1 className="admin-ai-embed-title">AI Embed Runner</h1>
         <p className="admin-ai-embed-desc">
           서버 주소를 기준으로 전체 Embed 실행과 movieId 단건 삭제를 처리합니다.

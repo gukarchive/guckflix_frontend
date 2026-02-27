@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import apiConfig from '../../config/apiConfig';
 import guckflixApi from '../../config/guckflixApi';
+import { toast } from 'react-toastify';
+import './adminMovies.css';
+
+const initialQueryCond = {
+  limit: 20,
+  page: 1,
+  direction: 'desc',
+  orderBy: 'release_date',
+  keyword: '',
+};
 
 const AdminMovies = () => {
-  const containerStyle = {
-    gridArea: 'center-bottom',
-    background: '#ededed',
-    padding: '20px',
-  };
-
-  const tableStyle = {
-    background: 'white',
-    padding: '10px',
-  };
+  const navigate = useNavigate();
 
   // API 부르는 메서드
   const callApi = async () => {
@@ -21,6 +24,9 @@ const AdminMovies = () => {
 
   // 검색된 결과값
   const [content, setContent] = useState({});
+  const [deletingMovieId, setDeletingMovieId] = useState(null);
+  const [openedPosterMovieId, setOpenedPosterMovieId] = useState(null);
+  const [openedBackdropMovieId, setOpenedBackdropMovieId] = useState(null);
   /*
   {
     "size": 40,
@@ -43,13 +49,8 @@ const AdminMovies = () => {
   */
 
   // 검색에 사용할 조건
-  const [queryCond, setQueryCond] = useState({
-    limit: 20,
-    page: 1,
-    direction: 'asc',
-    orderBy: 'release_date',
-    keyword: '',
-  });
+  const [queryCond, setQueryCond] = useState(initialQueryCond);
+  const [searchInput, setSearchInput] = useState('');
   /**
    * {
    *  direction : 'asc' || 'desc'
@@ -97,12 +98,80 @@ const AdminMovies = () => {
     setRenderNumbers([...renderNumberList]);
   };
 
+  const handleSort = (orderBy) => {
+    setQueryCond({
+      ...queryCond,
+      direction: queryCond.direction === 'asc' ? 'desc' : 'asc',
+      orderBy,
+      page: 1,
+    });
+  };
+
+  const arrowFor = (orderBy) => {
+    if (queryCond.orderBy !== orderBy) {
+      return '';
+    }
+    return queryCond.direction === 'asc' ? '▲' : '▼';
+  };
+
+  const deleteMovieHandle = async (movieId) => {
+    if (!window.confirm(`영화 ID ${movieId}를 삭제하시겠습니까?`)) {
+      return;
+    }
+
+    setDeletingMovieId(movieId);
+    try {
+      const response = await guckflixApi.deleteMovie(movieId);
+      if (response.status === 200 || response.status === 204) {
+        toast.success(`ID ${movieId} 삭제 완료`);
+        await callApi();
+        return;
+      }
+      toast.error(`삭제 실패 (${response.status})`);
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        '삭제 중 오류가 발생했습니다.';
+      toast.error(`삭제 실패: ${errorMessage}`);
+    } finally {
+      setDeletingMovieId(null);
+    }
+  };
+
+  const togglePosterPreview = (movieId) => {
+    setOpenedPosterMovieId((prevMovieId) =>
+      prevMovieId === movieId ? null : movieId,
+    );
+  };
+
+  const toggleBackdropPreview = (movieId) => {
+    setOpenedBackdropMovieId((prevMovieId) =>
+      prevMovieId === movieId ? null : movieId,
+    );
+  };
+
+  const clearFilters = () => {
+    setSearchInput('');
+    setQueryCond({ ...initialQueryCond });
+  };
+
   return (
-    <div style={containerStyle}>
-      <table style={tableStyle}>
-        <thead>
-          <tr>
+    <div className="admin-movies-page">
+      <section className="admin-movies-panel">
+        <header className="admin-movies-header">
+          <h1>영화 데이터 관리</h1>
+          <div className="admin-movies-summary">
+            <span>총 {content.total_count || 0}건</span>
+            <span>페이지 {content.page || 1}</span>
+          </div>
+        </header>
+
+        <div className="admin-movies-toolbar">
+          <label>
+            출력 개수
             <select
+              value={queryCond.limit}
               onChange={(e) =>
                 setQueryCond({
                   ...queryCond,
@@ -111,39 +180,184 @@ const AdminMovies = () => {
                 })
               }
             >
-              <option value="20">20개씩</option>
-              <option value="40">40개씩</option>
-              <option value="100">100개씩</option>
+              <option value="20">20개</option>
+              <option value="40">40개</option>
+              <option value="100">100개</option>
             </select>
+          </label>
+
+          <label className="admin-movies-search">
+            제목 검색
             <input
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="엔터로 검색 적용"
               onKeyDown={(e) =>
-                e.keyCode === 13
+                e.key === 'Enter'
                   ? setQueryCond({
                       ...queryCond,
-                      keyword: e.target.value,
+                      keyword: searchInput,
                       page: 1,
                     })
                   : queryCond
               }
             />
-            {content &&
-              renderNumbers.map((renderNumber, index, arr) =>
-                /**
-                 * pagingNumberCalc 메서드의 결과에서 [1 ... 8 9 10 11 12 13 (14) 15 16 17 18 19 20 ... 50] 처럼 말줄임표가 필요
-                 * 말줄임표 기준은 인덱스와 다음 인덱스의 절대값이 1 초과하는 경우 말줄임표 삽입
-                 */
-                Math.abs(arr[index] - arr[index - 1]) > 1 ? (
-                  <>
-                    ...
-                    <PagingButton
-                      setQueryCond={setQueryCond}
-                      queryCond={queryCond}
-                      selected={renderNumber === content.page}
-                    >
-                      {renderNumber}
-                    </PagingButton>
-                  </>
-                ) : (
+          </label>
+
+          <div className="admin-movies-sort-buttons">
+            <button
+              type="button"
+              className={queryCond.orderBy === 'release_date' ? 'active' : ''}
+              onClick={() => handleSort('release_date')}
+            >
+              개봉일 정렬 {arrowFor('release_date')}
+            </button>
+            <button
+              type="button"
+              className={queryCond.orderBy === 'vote_average' ? 'active' : ''}
+              onClick={() => handleSort('vote_average')}
+            >
+              평점 정렬 {arrowFor('vote_average')}
+            </button>
+            <button
+              type="button"
+              className={queryCond.orderBy === 'popularity' ? 'active' : ''}
+              onClick={() => handleSort('popularity')}
+            >
+              인기 정렬 {arrowFor('popularity')}
+            </button>
+            <button
+            type="button"
+            className="admin-movies-create-btn"
+            onClick={clearFilters}
+          >
+            검색 초기화
+          </button>
+          </div>
+
+          <button
+            type="button"
+            className="admin-movies-create-btn"
+            onClick={() => navigate('/admin/ai/embed')}
+          >
+            EMBED 관리
+          </button>
+          <button
+            type="button"
+            className="admin-movies-create-btn"
+            onClick={() => navigate('/movies/form')}
+          >
+            등록
+          </button>
+        </div>
+
+        <div className="admin-movies-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>제목</th>
+                <th>개봉일</th>
+                <th>평점</th>
+                <th>인기</th>
+                <th>평가 수</th>
+                <th>포스터 경로</th>
+                <th>백드롭 경로</th>
+                <th>비고</th>
+              </tr>
+            </thead>
+            <tbody>
+              {content.results &&
+                content.results.map((movie) => (
+                  <tr key={movie.id}>
+                    <td>
+                      <Link className="movie-id-link" to={`/movies/${movie.id}`}>
+                        {movie.id}
+                      </Link>
+                    </td>
+                    <td className="movie-title-cell">{movie.title}</td>
+                    <td>{movie.release_date}</td>
+                    <td>{movie.vote_average}</td>
+                    <td>{movie.popularity}</td>
+                    <td>{movie.vote_count}</td>
+                    <td className="path-cell poster-path-cell">
+                      {movie.poster_path ? (
+                        <>
+                          <button
+                            type="button"
+                            className="path-preview-trigger"
+                            onClick={() => togglePosterPreview(movie.id)}
+                          >
+                            {movie.poster_path}
+                          </button>
+                          {openedPosterMovieId === movie.id ? (
+                            <div className="poster-preview-popover">
+                              <img
+                                src={apiConfig.w500Image(movie.poster_path)}
+                                alt={`${movie.title} poster`}
+                              />
+                            </div>
+                          ) : null}
+                        </>
+                      ) : (
+                        '-'
+                      )}
+                    </td>
+                    <td className="path-cell backdrop-path-cell">
+                      {movie.backdrop_path ? (
+                        <>
+                          <button
+                            type="button"
+                            className="path-preview-trigger"
+                            onClick={() => toggleBackdropPreview(movie.id)}
+                          >
+                            {movie.backdrop_path}
+                          </button>
+                          {openedBackdropMovieId === movie.id ? (
+                            <div className="backdrop-preview-popover">
+                              <img
+                                src={apiConfig.originalImage(movie.backdrop_path)}
+                                alt={`${movie.title} backdrop`}
+                              />
+                            </div>
+                          ) : null}
+                        </>
+                      ) : (
+                        '-'
+                      )}
+                    </td>
+                    <td className="remarks-cell">
+                      <div className="movie-row-actions">
+                        <button
+                          type="button"
+                          className="movie-row-btn"
+                          onClick={() => navigate(`/movies/${movie.id}/edit`)}
+                          disabled={deletingMovieId === movie.id}
+                        >
+                          수정
+                        </button>
+                        <button
+                          type="button"
+                          className="movie-row-btn"
+                          onClick={() => deleteMovieHandle(movie.id)}
+                          disabled={deletingMovieId === movie.id}
+                        >
+                          {deletingMovieId === movie.id ? '삭제중' : '삭제'}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="admin-movies-pagination">
+          {content &&
+            renderNumbers.map((renderNumber, index, arr) =>
+              Math.abs(arr[index] - arr[index - 1]) > 1 ? (
+                <React.Fragment key={`ellipsis-${renderNumber}`}>
+                  <span className="pagination-ellipsis">...</span>
                   <PagingButton
                     setQueryCond={setQueryCond}
                     queryCond={queryCond}
@@ -151,92 +365,31 @@ const AdminMovies = () => {
                   >
                     {renderNumber}
                   </PagingButton>
-                ),
-              )}
-          </tr>
-          <tr>
-            <th>ID</th>
-            <th>제목</th>
-            <th
-              onClick={() =>
-                setQueryCond({
-                  ...queryCond,
-                  direction: queryCond.direction === 'asc' ? 'desc' : 'asc',
-                  orderBy: 'release_date',
-                  page: 1,
-                })
-              }
-            >
-              개봉일
-            </th>
-            <th
-              onClick={() =>
-                setQueryCond({
-                  ...queryCond,
-                  direction: queryCond.direction === 'asc' ? 'desc' : 'asc',
-                  orderBy: 'vote_average',
-                  page: 1,
-                })
-              }
-            >
-              평점
-            </th>
-            <th
-              onClick={() =>
-                setQueryCond({
-                  ...queryCond,
-                  direction: queryCond.direction === 'asc' ? 'desc' : 'asc',
-                  orderBy: 'popularity',
-                  page: 1,
-                })
-              }
-            >
-              인기
-            </th>
-            <th>평가 수</th>
-            <th>포스터 경로</th>
-            <th>큰 이미지 경로</th>
-          </tr>
-        </thead>
-        <tbody>
-          {content.results &&
-            content.results.map((movie) => (
-              <tr>
-                <td>{movie.id}</td>
-                <td>{movie.title}</td>
-                <td>{movie.release_date}</td>
-                <td>{movie.vote_average}</td>
-                <td>{movie.popularity}</td>
-                <td>{movie.vote_count}</td>
-                <td>{movie.poster_path}</td>
-                <td>{movie.backdrop_path}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+                </React.Fragment>
+              ) : (
+                <PagingButton
+                  key={renderNumber}
+                  setQueryCond={setQueryCond}
+                  queryCond={queryCond}
+                  selected={renderNumber === content.page}
+                >
+                  {renderNumber}
+                </PagingButton>
+              ),
+            )}
+        </div>
+      </section>
     </div>
   );
 };
 
 const PagingButton = ({ children, queryCond, setQueryCond, selected }) => {
-  //const [isHover, setIsHover] = useState(false);
-
-  const style = {
-    fontSize: selected ? '1.5vh' : '1vh',
-    background: 'white',
-  };
-
   const clickHandler = () => {
     setQueryCond({ ...queryCond, page: children });
   };
 
   return (
-    <button
-      style={style}
-      // onMouseOver={() => setIsHover(true)}
-      // onMouseLeave={() => setIsHover(true)}
-      onClick={clickHandler}
-    >
+    <button className={`paging-button ${selected ? 'selected' : ''}`} onClick={clickHandler}>
       {children}
     </button>
   );

@@ -7,9 +7,6 @@ import guckflixApi, {
   VideoSliderActionType,
 } from '../../config/guckflixApi';
 import './catalog.css';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { HoverbleClickableBtn } from '../../component/historyCatalog/HistoryCatalog';
 
 const Catalog = () => {
 
@@ -120,14 +117,6 @@ const Catalog = () => {
     loadMore: '더 찾기',
   };
 
-  const navigate = useNavigate();
-
-  const formHandle = () => {
-    navigate(`/movies/form`);
-  };
-
-  const role = useSelector((state) => state.role);
-
   return (
     <div className="catalog">
       <div className="catalog__search">
@@ -137,15 +126,6 @@ const Catalog = () => {
           type="text"
           placeholder={`${text.search}`}
         />
-        {role === 'ADMIN' ? (
-          <HoverbleClickableBtn
-            btnName={'등록'}
-            className={'actorDetail__showingBtn'}
-            func={formHandle}
-          />
-        ) : (
-          <></>
-        )}
       </div>
       <div className="catalog__videos__wrap">
         <div>

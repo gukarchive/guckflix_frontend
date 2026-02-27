@@ -7,9 +7,12 @@ import { LOGIN_ACTION_TYPE } from '../../store.js';
 import apiConfig from '../../config/apiConfig.js';
 
 const MOBILE_BREAKPOINT = 768;
+const SHRINK_SCROLL_THRESHOLD = 67;
+const SKIP_REQUESTED_API_ONCE_KEY = 'skipRequestedApiOnce';
 
 const Header = () => {
   const login = useSelector((state) => state.login);
+  const role = useSelector((state) => state.role);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -20,6 +23,7 @@ const Header = () => {
   const headerNav = [
     { text: 'Home', path: '/' },
     { text: 'Movie', path: '/movies/catalog' },
+    { text: 'admin/movies', path: '/admin/movies', adminOnly: true },
   ];
 
   const logoutHandle = async () => {
@@ -32,6 +36,8 @@ const Header = () => {
     const response = await promise.json();
 
     if (response.status_code === 200) {
+      localStorage.setItem(SKIP_REQUESTED_API_ONCE_KEY, 'true');
+      localStorage.removeItem('requestedApi');
       dispatch({ type: LOGIN_ACTION_TYPE.SET_ID, payload: null });
       dispatch({ type: LOGIN_ACTION_TYPE.SET_LOGIN, payload: false });
       dispatch({ type: LOGIN_ACTION_TYPE.SET_ROLE, payload: null });
@@ -41,7 +47,7 @@ const Header = () => {
   };
 
   const handleScrollAndResize = () => {
-    const shrink = window.scrollY > 100;
+    const shrink = window.scrollY > SHRINK_SCROLL_THRESHOLD;
     const mobile = window.innerWidth <= MOBILE_BREAKPOINT;
     const collapsed = mobile && shrink;
 
@@ -96,13 +102,15 @@ const Header = () => {
           isMobileCollapsed ? 'header__items--mobile' : ''
         } ${isMenuOpen ? 'is-open' : ''}`}
       >
-        {headerNav.map((item, index) => (
-          <li className="header__itmes__li" key={index}>
-            <Link to={item.path} onClick={closeMenu}>
-              {item.text}
-            </Link>
-          </li>
-        ))}
+        {headerNav.map((item, index) =>
+          item.adminOnly && role !== 'ADMIN' ? null : (
+            <li className="header__itmes__li" key={index}>
+              <Link to={item.path} onClick={closeMenu}>
+                {item.text}
+              </Link>
+            </li>
+          ),
+        )}
 
         {login ? (
           <li className="header__itmes__li">
