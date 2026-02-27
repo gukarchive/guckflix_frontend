@@ -2,7 +2,41 @@ import React, { useState } from 'react';
 import guckflixApi from '../../config/guckflixApi';
 import './floatingChatbot.css';
 
-const MOVIE_LINE_PATTERN = /^\s*-\s*\[([^\]]+)\]\s*([^:\n]+)(?::\s*(.*))?\s*$/;
+const MOVIE_LINE_PATTERN = /^\s*-\s*\[([^\]]+)\]\s*([^\n]+)\s*$/;
+
+const splitTitleAndDescription = (rawText) => {
+  const text = (rawText || '').trim();
+  const colonIndexes = [];
+
+  for (let i = 0; i < text.length; i += 1) {
+    if (text[i] === ':') {
+      colonIndexes.push(i);
+    }
+  }
+
+  // ':'가 2개 이상일 때는 두 번째 ':'를 구분자로 사용
+  if (colonIndexes.length >= 2) {
+    const secondColonIndex = colonIndexes[1];
+    return {
+      title: text.slice(0, secondColonIndex).trim(),
+      description: text.slice(secondColonIndex + 1).trim(),
+    };
+  }
+
+  // ':'가 1개일 때는 기존처럼 첫 번째 ':'를 구분자로 사용
+  if (colonIndexes.length === 1) {
+    const firstColonIndex = colonIndexes[0];
+    return {
+      title: text.slice(0, firstColonIndex).trim(),
+      description: text.slice(firstColonIndex + 1).trim(),
+    };
+  }
+
+  return {
+    title: text,
+    description: '',
+  };
+};
 
 const FloatingChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,8 +47,11 @@ const FloatingChatbot = () => {
       role: 'bot',
       text:
         '안녕하세요. 영화 추천 챗봇입니다.\n' +
-        '데이터가 영어로만 적재되어 있어, 제목을 영어로 검색해주시면 감사하겠습니다.\n' +
-        '예: "The Dark Knight같은 영화 10개 추천해줘"\n' +
+        '데이터가 영어로만 적재되어 있어, 영어로 검색해주시면 훨씬 정확합니다.\n' +
+        '예: "Tell me 10 sci-fi movies like Interstellar"\n' +
+        '예: "fantasy movies like lord of the rings"\n' +
+        '예: "sports movies"\n' +
+        `예: "movies starring Tom Cruise"\n` +
         '영화 추천 외 주제는 제공드리기 어렵습니다.',
     },
   ]);
@@ -37,8 +74,7 @@ const FloatingChatbot = () => {
       }
 
       const movieId = match[1].trim();
-      const title = match[2].trim();
-      const description = (match[3] || '').trim();
+      const { title, description } = splitTitleAndDescription(match[2]);
       const movieHref = `/movies/${encodeURIComponent(movieId)}`;
 
       return (
